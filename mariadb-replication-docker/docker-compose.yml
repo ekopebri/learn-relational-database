@@ -1,0 +1,29 @@
+version: '3'
+services:
+  primary:
+    image: mariadb:lts-jammy
+    container_name: mariadb-primary
+    restart: unless-stopped
+    tty: true
+    environment:
+      MARIADB_ROOT_PASSWORD: 'secret'
+      MYSQL_INITDB_SKIP_TZINFO: 'Y'
+    working_dir: /var/lib/mysql
+    volumes:
+      - $PWD/config-files/primarycnf:/etc/mysql/conf.d
+      - $PWD/primaryinit:/docker-entrypoint-initdb.d
+      - $PWD/log-files-primary:/var/lib/mysql
+  
+  secondary:
+    image: mariadb:lts-jammy
+    container_name: mariadb-secondary-1
+    restart: unless-stopped
+    tty: true
+    environment:
+      MARIADB_ROOT_PASSWORD: 'secret'
+      MYSQL_INITDB_SKIP_TZINFO: 'Y'
+    working_dir: /var/lib/mysql
+    volumes:
+      - $PWD/config-files/secondary-1:/etc/mysql/conf.d
+      - $PWD/secondaryinit:/docker-entrypoint-initdb.d
+      - $PWD/log-files-secondary-1:/var/lib/mysql
